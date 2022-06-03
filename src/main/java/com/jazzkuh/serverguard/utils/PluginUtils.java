@@ -76,7 +76,9 @@ public class PluginUtils {
 
     public static @Nullable PluginInformation getKnownPluginInfo(Plugin plugin) {
         for (PluginInformation pluginInformation : ServerGuard.getInstance().getLookedUpPlugins()) {
-            if (plugin.getName().equals(pluginInformation.getName()) && plugin.getDescription().getAuthors().equals(pluginInformation.getAuthors())) {
+            if (plugin.getName().equals(pluginInformation.getName())) {
+                if (pluginInformation.getAuthors().isEmpty()) return pluginInformation;
+                if (!pluginInformation.getAuthors().equals(plugin.getDescription().getAuthors())) continue;
                 return pluginInformation;
             }
         }
