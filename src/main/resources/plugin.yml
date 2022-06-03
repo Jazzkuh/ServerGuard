@@ -1,0 +1,7 @@
+name: Serverguard
+version: ${project.version}
+main: com.jazzkuh.serverguard.ServerGuard
+authors: [Jazzkuh]
+description: Protect your server against known malicious and dangerous plugins!
+commands:
+    serverguard: {}
