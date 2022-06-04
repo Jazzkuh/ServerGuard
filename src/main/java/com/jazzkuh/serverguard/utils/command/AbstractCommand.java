@@ -69,7 +69,7 @@ public abstract class AbstractCommand implements TabExecutor {
     }
 
     protected String getBasePermission() {
-        return "mtwapens.command." + commandName;
+        return "serverguard.command." + commandName;
     }
 
     protected void sendNotEnoughArguments(AbstractCommand command) {
