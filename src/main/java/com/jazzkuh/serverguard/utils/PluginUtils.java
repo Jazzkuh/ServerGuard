@@ -12,13 +12,17 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class PluginUtils {
     static {
@@ -92,8 +96,47 @@ public class PluginUtils {
                 return "&aSafe (Verified)";
             case MALICIOUS:
                 return "&cMalicious";
+            case DANGEROUS:
+                return "&4Dangerous";
+            case WARNING:
+                return "&6Warning";
             default:
                 return "&eUnknown";
         }
+    }
+
+    public static String getStatusColor(PluginStatus pluginStatus) {
+        switch (pluginStatus) {
+            case SAFE:
+                return "&a";
+            case MALICIOUS:
+                return "&c";
+            case DANGEROUS:
+                return "&4";
+            case WARNING:
+                return "&6";
+            default:
+                return "&e";
+        }
+    }
+
+    public static boolean scanFile(File file) {
+        if (!file.isDirectory() && file.getName().endsWith(".jar"))
+            try {
+                ZipFile zip = new ZipFile(file);
+                Enumeration<? extends ZipEntry> entries = zip.entries();
+                while (entries.hasMoreElements()) {
+                    ZipEntry zipEntry = entries.nextElement();
+                    zipEntry.setCompressedSize(-1L);
+                    if (zipEntry.getName().equals("javassist/PingMessage.class") ||
+                            zipEntry.getName().equals("javassist/ResponseContainer.class")) {
+                        return true;
+                    }
+                }
+                zip.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        return false;
     }
 }

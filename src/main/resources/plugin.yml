@@ -1,4 +1,4 @@
-name: Serverguard
+name: ServerGuard
 version: ${project.version}
 main: com.jazzkuh.serverguard.ServerGuard
 authors: [Jazzkuh]

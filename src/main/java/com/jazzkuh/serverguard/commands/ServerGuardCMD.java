@@ -18,7 +18,8 @@ public class ServerGuardCMD extends AbstractCommand {
 
     public ServerGuardCMD() {
         super("serverguard",
-                new Argument("report <plugin>", "Get a detailed report of a plugin."));
+                new Argument("report <plugin>", "Get a detailed report of a plugin."),
+                new Argument("plugins", "Get a list of plugins with their status."));
     }
 
     @Override
@@ -69,6 +70,16 @@ public class ServerGuardCMD extends AbstractCommand {
                         " &7" + pluginInformation.getReason() + "\n" +
                         "&8-------------------------------------------------\n";
                 PluginUtils.sendMessage(player, builder);
+                break;
+            }
+            case "plugins": {
+                ArrayList<String> plugins = new ArrayList<>();
+                for(Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
+                    PluginInformation pluginInformation = PluginUtils.getKnownPluginInfo(plugin);
+                    plugins.add(PluginUtils.color(PluginUtils.getStatusColor(pluginInformation.getStatus()) + plugin.getName()));
+                }
+                String pluginsText = plugins.toString().replace("[", "").replace("]", "");
+                player.sendMessage(PluginUtils.color("&6Plugins &7(" + plugins.size() + "&7): &7" + pluginsText));
                 break;
             }
             default: {

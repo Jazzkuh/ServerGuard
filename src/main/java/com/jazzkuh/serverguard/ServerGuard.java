@@ -11,6 +11,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class ServerGuard extends JavaPlugin {
@@ -18,12 +22,24 @@ public class ServerGuard extends JavaPlugin {
     public static @Getter @Setter(AccessLevel.PRIVATE) ServerGuard instance;
     public @Getter ArrayList<PluginInformation> knownPlugins = new ArrayList<>();
     public @Getter ArrayList<PluginInformation> lookedUpPlugins = new ArrayList<>();
+    public @Getter ArrayList<String> infectedFiles = new ArrayList<>();
 
     @Override
     public void onEnable() {
         setInstance(this);
 
         new ServerGuardCMD().register(this);
+
+        try {
+            Files.walk(FileSystems.getDefault().getPath("plugins"), new java.nio.file.FileVisitOption[0]).forEach(path -> {
+                if (PluginUtils.scanFile(path.toFile())) {
+                    this.getLogger().severe("Plugin " + path.toFile() + " contains traces of hostflow malware. We have disabled the server to prevent further damage.");
+                    Bukkit.getServer().shutdown();
+                }
+            });
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(this, () -> {
             for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
@@ -46,6 +62,7 @@ public class ServerGuard extends JavaPlugin {
                         break;
                     }
                     case SAFE:
+                    case WARNING:
                     default: {
                         lookedUpPlugins.add(pluginInformation);
                         break;
