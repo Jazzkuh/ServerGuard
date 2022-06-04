@@ -56,16 +56,16 @@ public class ServerGuard extends JavaPlugin {
                 switch (pluginInformation.getStatus()) {
                     case MALICIOUS: {
                         lookedUpPlugins.add(pluginInformation);
-                        this.getLogger().warning("Disabled plugin " + pluginInformation.getName() + " because it was flagged in the database as malicious.");
+                        this.getLogger().severe("Disabled plugin " + pluginInformation.getName() + " because it was flagged in the database as malicious.");
                         Bukkit.getPluginManager().disablePlugin(plugin);
                         break;
                     }
-                    case SAFE:
                     case WARNING: {
                         lookedUpPlugins.add(pluginInformation);
                         this.getLogger().warning("The plugin " + pluginInformation.getName() + " was flagged in the database as " + pluginInformation.getStatus().name().toLowerCase() + ". Details: " + pluginInformation.getReason());
                         break;
                     }
+                    case SAFE:
                     default: {
                         lookedUpPlugins.add(pluginInformation);
                         break;

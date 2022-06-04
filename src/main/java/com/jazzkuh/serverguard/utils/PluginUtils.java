@@ -70,7 +70,7 @@ public class PluginUtils {
 
     public static @Nullable PluginInformation getDatabasePluginInfo(Plugin plugin) {
         for (PluginInformation pluginInformation : ServerGuard.getInstance().getKnownPlugins()) {
-            if (plugin.getName().equals(pluginInformation.getName()) && plugin.getDescription().getAuthors().equals(pluginInformation.getAuthors())) {
+            if (plugin.getName().equals(pluginInformation.getName()) && plugin.getDescription().getAuthors().containsAll(pluginInformation.getAuthors())) {
                 return pluginInformation;
             }
         }
@@ -82,7 +82,7 @@ public class PluginUtils {
         for (PluginInformation pluginInformation : ServerGuard.getInstance().getLookedUpPlugins()) {
             if (plugin.getName().equals(pluginInformation.getName())) {
                 if (pluginInformation.getAuthors().isEmpty()) return pluginInformation;
-                if (!pluginInformation.getAuthors().equals(plugin.getDescription().getAuthors())) continue;
+                if (!pluginInformation.getAuthors().containsAll(plugin.getDescription().getAuthors())) continue;
                 return pluginInformation;
             }
         }
