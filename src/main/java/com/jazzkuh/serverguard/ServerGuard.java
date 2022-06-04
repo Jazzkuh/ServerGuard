@@ -14,7 +14,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class ServerGuard extends JavaPlugin {
@@ -34,7 +33,7 @@ public class ServerGuard extends JavaPlugin {
             Files.walk(FileSystems.getDefault().getPath("plugins"), new java.nio.file.FileVisitOption[0]).forEach(path -> {
                 if (PluginUtils.scanFile(path.toFile())) {
                     this.getLogger().severe("Plugin " + path.toFile() + " contains traces of hostflow malware. We have disabled the server to prevent further damage.");
-                    Bukkit.getServer().shutdown();
+                    System.exit(0);
                 }
             });
         } catch (IOException exception) {
