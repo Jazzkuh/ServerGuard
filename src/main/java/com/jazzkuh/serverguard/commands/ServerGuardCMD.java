@@ -73,13 +73,12 @@ public class ServerGuardCMD extends AbstractCommand {
                 break;
             }
             case "plugins": {
-                ArrayList<String> plugins = new ArrayList<>();
-                for(Plugin plugin : Bukkit.getServer().getPluginManager().getPlugins()) {
+                List<String> plugins = Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(plugin -> {
                     PluginInformation pluginInformation = PluginUtils.getKnownPluginInfo(plugin);
-                    plugins.add(PluginUtils.color(PluginUtils.getStatusColor(pluginInformation.getStatus()) + plugin.getName()));
-                }
-                String pluginsText = plugins.toString().replace("[", "").replace("]", "");
-                player.sendMessage(PluginUtils.color("&6Plugins &7(" + plugins.size() + "&7): &7" + pluginsText));
+                    return PluginUtils.color(PluginUtils.getStatusColor(pluginInformation.getStatus()) + plugin.getName());
+                }).collect(Collectors.toList());
+
+                player.sendMessage(PluginUtils.color("&6Plugins &7(" + plugins.size() + "&7): &7" + StringUtils.join(plugins, ", ")));
                 break;
             }
             default: {
