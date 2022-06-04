@@ -61,7 +61,11 @@ public class ServerGuard extends JavaPlugin {
                         break;
                     }
                     case SAFE:
-                    case WARNING:
+                    case WARNING: {
+                        lookedUpPlugins.add(pluginInformation);
+                        this.getLogger().warning("The plugin " + pluginInformation.getName() + " was flagged in the database as " + pluginInformation.getStatus().name().toLowerCase() + ". Details: " + pluginInformation.getReason());
+                        break;
+                    }
                     default: {
                         lookedUpPlugins.add(pluginInformation);
                         break;
