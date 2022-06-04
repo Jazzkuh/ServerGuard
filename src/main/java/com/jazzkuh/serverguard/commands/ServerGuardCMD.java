@@ -94,10 +94,10 @@ public class ServerGuardCMD extends AbstractCommand {
 
         if (args.length == 1) {
             return getApplicableTabCompleters(args[0],
-                    Collections.singletonList("report"));
+                    Arrays.asList("report", "plugins"));
         }
 
-        if (args.length == 2) {
+        if (args.length == 2 && args[0].equalsIgnoreCase("report")) {
             return getApplicableTabCompleters(args[1], Arrays.stream(Bukkit.getPluginManager().getPlugins()).map(Plugin::getName).collect(Collectors.toList()));
         }
 
