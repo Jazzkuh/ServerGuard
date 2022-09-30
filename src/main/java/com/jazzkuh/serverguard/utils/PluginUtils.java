@@ -26,7 +26,7 @@ import java.util.zip.ZipFile;
 
 public class PluginUtils {
     static {
-        JsonObject jsonObject = getJSON("https://dash.mtwapens.nl/api/serverguard", "GET");
+        JsonObject jsonObject = getJSON("https://dash.gunshell.nl/api/serverguard", "GET");
         if (jsonObject != null && jsonObject.get("success").getAsBoolean()) {
             jsonObject.getAsJsonArray("plugins").forEach(plugin -> {
                 JsonObject pluginObject = plugin.getAsJsonObject();
