@@ -27,7 +27,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
        name: MT-Wapens
-       path: ./build/libs/MT-Wapens-*.jar
+       path: ./build/libs/ServerGuard-*.jar
     - name: sends the jarfile to the discord
       uses: sinshutu/upload-to-discord@master
       env:
