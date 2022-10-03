@@ -1,5 +1,6 @@
 package com.jazzkuh.serverguard.utils;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,11 +21,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class PluginUtils {
+    public static final ImmutableList<String> infectedClasses = ImmutableList.<String>builder()
+            .add("javassist/PingMessage.class")
+            .add("javassist/ResponseContainer.class")
+            .add("plugin-config.bin")
+            .build();
+
     static {
         JsonObject jsonObject = getJSON("https://dash.gunshell.nl/api/serverguard", "GET");
         if (jsonObject != null && jsonObject.get("success").getAsBoolean()) {
@@ -43,6 +51,8 @@ public class PluginUtils {
                 ServerGuard.getInstance().getKnownPlugins().add(new PluginInformation(pluginName, pluginAuthors, reason, pluginState));
             });
         }
+
+
     }
 
     public static JsonObject getJSON(String url, String method) {
@@ -82,7 +92,7 @@ public class PluginUtils {
         for (PluginInformation pluginInformation : ServerGuard.getInstance().getLookedUpPlugins()) {
             if (plugin.getName().equals(pluginInformation.getName())) {
                 if (pluginInformation.getAuthors().isEmpty()) return pluginInformation;
-                if (!pluginInformation.getAuthors().containsAll(plugin.getDescription().getAuthors())) continue;
+                if (!new HashSet<>(pluginInformation.getAuthors()).containsAll(plugin.getDescription().getAuthors())) continue;
                 return pluginInformation;
             }
         }
@@ -128,10 +138,7 @@ public class PluginUtils {
                 while (entries.hasMoreElements()) {
                     ZipEntry zipEntry = entries.nextElement();
                     zipEntry.setCompressedSize(-1L);
-                    if (zipEntry.getName().equals("javassist/PingMessage.class") ||
-                            zipEntry.getName().equals("javassist/ResponseContainer.class")) {
-                        return true;
-                    }
+                    if (infectedClasses.contains(zipEntry.getName())) return true;
                 }
                 zip.close();
             } catch (Exception e) {
